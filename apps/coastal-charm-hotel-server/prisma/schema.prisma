@@ -1,0 +1,82 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Hotel {
+  contact     String?
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  location    String?
+  name        String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Booking {
+  checkInDate  DateTime?
+  checkOutDate DateTime?
+  createdAt    DateTime  @default(now())
+  guest        Guest?    @relation(fields: [guestId], references: [id])
+  guestId      String?
+  id           String    @id @default(cuid())
+  room         Room?     @relation(fields: [roomId], references: [id])
+  roomId       String?
+  totalPrice   Float?
+  updatedAt    DateTime  @updatedAt
+}
+
+model Room {
+  bookings   Booking[]
+  createdAt  DateTime           @default(now())
+  id         String             @id @default(cuid())
+  price      Float?
+  roomNumber String?
+  status     EnumRoomStatus?
+  typeField  EnumRoomTypeField?
+  updatedAt  DateTime           @updatedAt
+}
+
+model Service {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  price       Float?
+  serviceName String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Guest {
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+  email       String?
+  firstName   String?
+  id          String    @id @default(cuid())
+  lastName    String?
+  phoneNumber String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumRoomStatus {
+  Option1
+}
+
+enum EnumRoomTypeField {
+  Option1
+}
